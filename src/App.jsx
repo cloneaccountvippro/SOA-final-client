@@ -3,7 +3,9 @@ import SignIn from './pages/signin/page'
 
 function App() {
   return (
-    <SignIn/>
+    <div className="h-dvh">
+      <SignIn/>
+    </div>
   )
 }
 
