@@ -1,6 +1,7 @@
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom'
 import './App.css'
 import SignIn from './pages/signin/page'
+// eslint-disable-next-line no-unused-vars
 import {useEffect} from 'react';
 import {useSelector} from 'react-redux'
 
@@ -12,6 +13,7 @@ const router = createBrowserRouter(
   )
 )
 function App() {
+  // eslint-disable-next-line no-unused-vars
   const isLogin = useSelector((state) => state.user.isLogin)
 
   return (
