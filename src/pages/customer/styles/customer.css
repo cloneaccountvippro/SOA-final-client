@@ -1,0 +1,72 @@
+.pagination {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination button {
+    display: block;
+    padding: 5px 12px;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.pagination button:hover {
+    background-color: #e0e0e0;
+}
+
+.pagination .active button {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.pagination .active button:hover {
+    background-color: #0056b3;
+}
+
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    max-height: 400px; /* Set maximum height for the table */
+}
+
+.table {
+    width: 100%; /* Set table width to 100% of its container */
+    border-collapse: collapse; /* Collapse border spacing between table cells */
+}
+
+th, td {
+    padding: 8px; /* Add padding to table cells */
+    text-align: left; /* Align text to left within table cells */
+    border: 1px solid #dddddd; /* Add borders to table cells */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow content */
+    text-overflow: ellipsis; /* Display ellipsis (...) for overflow text */
+    max-width: 150px; /* Set maximum width for table cells */
+}
+
+th {
+    position: sticky; /* Make the table header sticky */
+    top: 0; /* Stick the header to the top of the container */
+    background-color: #f2f2f2; /* Add background color to table header */
+    z-index: 1; /* Ensure the header is above the table data */
+    height: 40px; /* Set fixed height for table header */
+}
+
+/* Set width for the columns as needed */
+th:nth-child(1) { width: 150px; }
+th:nth-child(2) { width: 50px; }
+th:nth-child(3) { width: 80px; }
+th:nth-child(4) { width: 120px; }
+th:nth-child(5) { width: 200px; }
+th:nth-child(6) { width: 200px; }
+th:nth-child(7) { width: 100px; }

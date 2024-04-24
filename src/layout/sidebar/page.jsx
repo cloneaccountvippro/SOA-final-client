@@ -7,7 +7,7 @@ import { TbFileInvoice } from "react-icons/tb";
 import {useState} from 'react';
 
 export const Sidebar = () => {
-    const [selectedTab, setSelectedTab] = useState('Page1')
+    const [selectedTab, setSelectedTab] = useState('Customer')
     return (
         <div className="h-screen w-[16vw] border-r p-3 flex flex-col justify-between">
             {/* User section */} 
