@@ -33,7 +33,7 @@ function ServicesPage() {
         setCustomerData((prevCustomerData) => {
             const foundCustomer = customers.find((customer) => customer.phone_number === phoneNumber);
             if (foundCustomer) {
-                // If a customer is found, update other fields with customer's data
+                // eslint-disable-next-line no-unused-vars
                 const { phone_number, ...customerWithoutPhoneNumber } = foundCustomer; // Exclude phone number from update
                 return {
                     ...prevCustomerData,
