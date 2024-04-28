@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -32,6 +33,7 @@ function StaffDetailPage() {
         <div className='w-full h-full flex flex-col items-center justify-center'>
             <div className='h-full w-[70%] border-[1px] border-slate-300 rounded-md divide-y'>
             <h1 className='text-2xl font-semibold flex items-start pl-2 py-1'>Kien</h1>
+            <p>{id}</p>
             <p className='py-2'><strong>Phone Number:</strong> 12</p>
             <p className='py-2'><strong>Email:</strong> 122</p>
             <p className='py-2'><strong>Date of Birth:</strong> 123</p>
@@ -46,7 +48,7 @@ function StaffDetailPage() {
 }
 
 StaffDetailPage.propTypes = {
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
 };
 
 export default StaffDetailPage;

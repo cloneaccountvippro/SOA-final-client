@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Button } from "@/components/ui/button"
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -47,11 +47,11 @@ function StaffRow({ staff }) {
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
-                {/* <Link to={`/staff/${id}`}> */}
+                <NavLink to={`/staff/${id}`}>
                     <Button className='bg-white border-[1px] border-blue-500 hover:bg-blue-500 group px-3 ml-2'>
                         <IoInformationCircleOutline className='w-4 h-4 text-blue-600 fill-blue-600 group-hover:fill-white group-hover:text-white' />
                     </Button>
-                {/* </Link> */}
+                </NavLink>
             </td>
         </tr>
     );
