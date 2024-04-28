@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { rooms } from "../test/data/room";
-import { customers } from "@/pages/customer/test/data/customer";
+import { services } from "../test/data/service";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { customers } from "@/pages/customer/test/data/customer";
 
-function RoomsPage() {
+function ServicesPage() {
     const [customerData, setCustomerData] = useState({
         name: "",
         age: "",
@@ -15,9 +15,8 @@ function RoomsPage() {
         phone_number: ""
     });
 
-    const [selectedRooms, setSelectedRooms] = useState([]);
+    const [selectedServices, setSelectedServices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [showAvailableRooms, setShowAvailableRooms] = useState(false);
     const itemsPerPage = 8;
 
     // Function to handle input change for customer data fields
@@ -29,14 +28,12 @@ function RoomsPage() {
         });
     };
 
-    // Function to handle input change for phone number
     const handlePhoneNumberChange = (event) => {
         const phoneNumber = event.target.value;
         setCustomerData((prevCustomerData) => {
             const foundCustomer = customers.find((customer) => customer.phone_number === phoneNumber);
             if (foundCustomer) {
                 // If a customer is found, update other fields with customer's data
-                // eslint-disable-next-line no-unused-vars
                 const { phone_number, ...customerWithoutPhoneNumber } = foundCustomer; // Exclude phone number from update
                 return {
                     ...prevCustomerData,
@@ -59,23 +56,20 @@ function RoomsPage() {
     };
 
     // Function to handle room selection
-    const handleRoomSelection = (roomId) => {
-        const selectedRoom = rooms.find((room) => room.id === roomId);
-        if (selectedRoom && selectedRoom.isActive) {
-            setSelectedRooms((prevSelectedRooms) => {
-                if (prevSelectedRooms.includes(roomId)) {
-                    // If room is already selected, deselect it
-                    return prevSelectedRooms.filter((id) => id !== roomId);
-                } else {
-                    // If room is not selected, select it
-                    return [...prevSelectedRooms, roomId];
-                }
-            });
-        }
+    const handleServiceSelection = (serviceId) => {
+        setSelectedServices((prevSelectedServices) => {
+            if (prevSelectedServices.includes(serviceId)) {
+                // If service is already selected, deselect it
+                return prevSelectedServices.filter((id) => id !== serviceId);
+            } else {
+                // If service is not selected, select it
+                return [...prevSelectedServices, serviceId];
+            }
+        });
     };
 
     // Calculate total number of pages
-    const totalPages = Math.ceil(rooms.length / itemsPerPage);
+    const totalPages = Math.ceil(services.length / itemsPerPage);
 
     // Function to handle page change
     const handlePageChange = (page) => {
@@ -86,11 +80,8 @@ function RoomsPage() {
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-    // Filter rooms based on availability
-    const availableRooms = rooms.filter(room => room.isActive);
-
-    // Filter rooms based on pagination and availability
-    const currentItems = showAvailableRooms ? availableRooms.slice(indexOfFirstItem, indexOfLastItem) : rooms.slice(indexOfFirstItem, indexOfLastItem);
+    // Get current items based on pagination
+    const currentItems = services.slice(indexOfFirstItem, indexOfLastItem);
 
     // Check if all customer fields are filled
     const isCustomerDataComplete = Object.values(customerData).every(value => value !== "");
@@ -102,7 +93,6 @@ function RoomsPage() {
                 <div>
                     <h2 className="font-semibold text-2xl">Customer Information</h2>
                     <form className="w-[400px] mt-5">
-                        {/* Input field for phone number */}
                         <div className="flex items-center gap-2 justify-between">
                             <label htmlFor="phone">Phone Number:</label>
                             <Input
@@ -137,53 +127,49 @@ function RoomsPage() {
                         })}
                     </form>
                     {/* Button to submit customer data */}
-                    <Button disabled={!isCustomerDataComplete} className="mt-3">Booking Room</Button>
+                    <Button disabled={!isCustomerDataComplete} className="mt-3">Booking Service</Button>
                 </div>
-                {/* Room Section */}
+                {/* Service Section */}
                 <div>
-                    <h1 className="font-semibold text-2xl mb-5">Rooms</h1>
+                    <h1 className="font-semibold text-2xl mb-5">Services</h1>
                     <div style={{ overflowY: 'auto', maxHeight: '500px' }}>
                         <table className="border-collapse border border-gray-400 w-[400px]">
                             <thead>
                                 <tr>
-                                    <th className="border border-gray-400 p-2 w-[33%]">Name</th>
-                                    <th className="border border-gray-400 p-2 w-[33%]">Type</th>
+                                    <th className="border border-gray-400 p-2 w-[66%]">Name</th>
                                     <th className="border border-gray-400 p-2 w-[33%]">Price</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {currentItems.map((room) => (
+                                {currentItems.map((service) => (
                                     <tr
-                                        key={room.id}
-                                        className={room.isActive ? (selectedRooms.includes(room.id) ? "bg-blue-500 cursor-pointer" : "hover:bg-blue-300 cursor-pointer") : "bg-gray-200"}
-                                        onClick={() => handleRoomSelection(room.id)}
+                                        key={service.id}
+                                        className={selectedServices.includes(service.id) ? "bg-blue-500 cursor-pointer" : "hover:bg-blue-300 cursor-pointer"}
+                                        onClick={() => handleServiceSelection(service.id)}
                                     >
-                                        <td className="border border-gray-400 p-2">{room.name}</td>
-                                        <td className="border border-gray-400 p-2">{room.type}</td>
-                                        <td className="border border-gray-400 p-2">{room.price}$</td>
+                                        <td className="border border-gray-400 p-2">{service.name}</td>
+                                        <td className="border border-gray-400 p-2">{service.price}$</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                     {/* Pagination */}
-                    <div className="mt-5  flex justify-end">
-                        <div className="space-x-2">
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <Button key={i} onClick={() => handlePageChange(i + 1)} className="w-2 h-[30px]">
-                                    {i + 1}
-                                </Button>
-                            ))}
+                    {totalPages > 1 && (
+                        <div className="mt-5  flex justify-end">
+                            <div className="space-x-2">
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                    <Button key={i} onClick={() => handlePageChange(i + 1)} className="w-2 h-[30px]">
+                                        {i + 1}
+                                    </Button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                    {/* Button to toggle available rooms */}
-                    <Button onClick={() => setShowAvailableRooms(!showAvailableRooms)} className="">
-                        {showAvailableRooms ? "Show All Rooms" : "Show Available Rooms Only"}
-                    </Button>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
 
-export default RoomsPage;
+export default ServicesPage;

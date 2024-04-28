@@ -3,6 +3,7 @@ import { Sidebar } from "./sidebar/page";
 import StaffPage from "@/pages/staff";
 import StaffDetailPage from "@/pages/staff/component/detail";
 import RoomsPage from "@/pages/rooms";
+import ServicesPage from "@/pages/service";
 
 export const AppLayout = () => {
     return (
@@ -14,7 +15,8 @@ export const AppLayout = () => {
                 {/* <CustomerPage/> */}
                 {/* <StaffPage/> */}
                 {/* <StaffDetailPage/> */}
-                <RoomsPage/>
+                {/* <RoomsPage/> */}
+                <ServicesPage/>
             </div>
         </div>
     ); 
