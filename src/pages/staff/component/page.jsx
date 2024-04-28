@@ -70,7 +70,7 @@ function StaffPage() {
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
-        setCurrentPage(1); // Reset pagination to first page when search query changes
+        setCurrentPage(1);
     };
 
     return (
@@ -147,12 +147,10 @@ function StaffPage() {
                         <tr>
                             <th>Name</th>
                             <th>Phone Number</th>
-                            <th>Email</th>
-                            <th>Date of Birth</th>
-                            <th>Address</th>
+                            <th>Email Address</th>
                             <th>Gender</th>
                             <th>Position</th>
-                            <th>Salary</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>

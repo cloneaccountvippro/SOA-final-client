@@ -1,6 +1,7 @@
 import CustomerPage from "@/pages/customer";
 import { Sidebar } from "./sidebar/page";
 import StaffPage from "@/pages/staff";
+import StaffDetailPage from "@/pages/staff/component/detail";
 
 export const AppLayout = () => {
     return (
@@ -10,7 +11,8 @@ export const AppLayout = () => {
             </div>
             <div className="ml-[16vw] p-5">
                 {/* <CustomerPage/> */}
-                <StaffPage/>
+                {/* <StaffPage/> */}
+                <StaffDetailPage/>
             </div>
         </div>
     ); 
