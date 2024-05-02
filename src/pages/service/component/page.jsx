@@ -1,23 +1,25 @@
-import { useState } from "react";
-import { services } from "../test/data/service";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { customers } from "@/pages/customer/test/data/customer";
+import axios from "axios";
 
 function ServicesPage() {
     const [customerData, setCustomerData] = useState({
-        name: "",
-        age: "",
+        idCard: "",
+        fullName: "",
+        dob: "",
         gender: "",
         address: "",
         email: "",
         country: "",
-        phone_number: ""
+        phoneNumber: ""
     });
 
+    const [services, setServices] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+
 
     // Function to handle input change for customer data fields
     const handleCustomerDataChange = (event) => {
@@ -28,32 +30,66 @@ function ServicesPage() {
         });
     };
 
-    const handlePhoneNumberChange = (event) => {
+    const handlePhoneNumberChange = async (event) => {
         const phoneNumber = event.target.value;
-        setCustomerData((prevCustomerData) => {
-            const foundCustomer = customers.find((customer) => customer.phone_number === phoneNumber);
-            if (foundCustomer) {
-                // eslint-disable-next-line no-unused-vars
-                const { phone_number, ...customerWithoutPhoneNumber } = foundCustomer; // Exclude phone number from update
-                return {
-                    ...prevCustomerData,
-                    ...customerWithoutPhoneNumber
-                };
-            } else {
-                // If no customer is found, reset other fields
-                return {
-                    ...prevCustomerData,
-                    name: "",
-                    age: "",
-                    gender: "",
-                    address: "",
-                    email: "",
-                    country: "",
-                    phone_number: phoneNumber
-                };
+        // Check if the input contains exactly 10 digits
+        if (phoneNumber.length === 10 && /^\d+$/.test(phoneNumber)) {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/Customers/phone-number/${phoneNumber}`);
+                const customer = response.data;
+                setCustomerData((prevCustomerData) => {
+                    if (customer) {
+                        // If a customer is found, update other fields with customer's data
+                        return {
+                            ...prevCustomerData,
+                            ...customer
+                        };
+                    } else {
+                        // If no customer is found, reset other fields
+                        return {
+                            ...prevCustomerData,
+                            idCard: "",
+                            fullName: "",
+                            dob: "",
+                            gender: "",
+                            address: "",
+                            email: "",
+                            country: "",
+                            phoneNumber: phoneNumber
+                        };
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching customer:', error);
+                // Handle error, such as displaying a message to the user
             }
-        });
+        } else {
+            setCustomerData({
+                idCard: "",
+                fullName: "",
+                dob: "",
+                gender: "",
+                address: "",
+                email: "",
+                country: "",
+                phoneNumber: phoneNumber
+            });
+        }
     };
+
+
+    const fetchServices = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/Services');
+            setServices(response.data);
+        } catch (error) {
+            console.error('Error fetching services:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchServices();
+    }, []);
 
     // Function to handle room selection
     const handleServiceSelection = (serviceId) => {
@@ -107,7 +143,7 @@ function ServicesPage() {
                         </div>
                         {/* Input fields for customer data */}
                         {Object.keys(customerData).map((key) => {
-                            if (key !== "phone_number" && key !== 'id') { // Exclude phone number field from rendering
+                            if (key !== "phoneNumber" && key !== 'customerId') { // Exclude phone number field from rendering
                                 return (
                                     <div key={key} className="flex items-center gap-2 my-2 justify-between">
                                         <label htmlFor={key}>{key.replace('_', ' ').toUpperCase()}:</label>
@@ -143,9 +179,9 @@ function ServicesPage() {
                             <tbody>
                                 {currentItems.map((service) => (
                                     <tr
-                                        key={service.id}
-                                        className={selectedServices.includes(service.id) ? "bg-blue-500 cursor-pointer" : "hover:bg-blue-300 cursor-pointer"}
-                                        onClick={() => handleServiceSelection(service.id)}
+                                        key={service.serviceId}
+                                        className={selectedServices.includes(service.serviceId) ? "bg-blue-500 cursor-pointer" : "hover:bg-blue-300 cursor-pointer"}
+                                        onClick={() => handleServiceSelection(service.serviceId)}
                                     >
                                         <td className="border border-gray-400 p-2">{service.name}</td>
                                         <td className="border border-gray-400 p-2">{service.price}$</td>

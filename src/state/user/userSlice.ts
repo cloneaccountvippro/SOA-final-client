@@ -21,27 +21,30 @@ const userSlice = createSlice({
         resetUserState: () => {
             return initialState;
         },
+        setLoginStatus: (state, action) => {
+            state.isLogin = action.payload
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(updateAutheticationStatusAsync.pending, () => {
             console.log("Updating user status...")
         })
         .addCase(updateAutheticationStatusAsync.fulfilled, (state, action) => {
-            state.id += action.payload.id
+            state.id = action.payload.id
             state.name = action.payload.name
             state.role = action.payload.role
-            state.isLogin = action.payload.isLogin
         })
     }
 })
 
 export const updateAutheticationStatusAsync = createAsyncThunk(
     "user/updateAutheticationStatusAsync",
-    async (data: {id: number, name: string, role: string, isLogin: boolean}) => {
+    async (data: {id: number, name: string, role: string}) => {
         await new Promise((resolve) => setTimeout(resolve, 1000))
         return data
     }
 )
 
+export const { setLoginStatus } = userSlice.actions
 export const {resetUserState} = userSlice.actions
 export default userSlice.reducer;

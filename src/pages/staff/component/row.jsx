@@ -12,21 +12,32 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-
 import { MdOutlineDelete } from "react-icons/md";
 import { IoInformationCircleOutline } from "react-icons/io5";
+import { useState } from 'react';
+import axios from 'axios';
 
 function StaffRow({ staff }) {
-    const { id, fullname, phone_number, email, gender, position } = staff;
+    const { staffId, fullName, phoneNumber, email, gender, position } = staff;
+    const [isDeleting, setIsDeleting] = useState(false);
 
-    const DeleteStaff = () =>{
-        console.log("Deleted")
-    }
+    const handleDeleteStaff = async () => {
+        try {
+            setIsDeleting(true);
+            await axios.delete(`http://localhost:3000/api/Staffs/${staffId}`);
+            console.log('Staff deleted successfully');
+            window.location.reload();
+        } catch (error) {
+            console.error('Error deleting staff:', error);
+        } finally {
+            setIsDeleting(false);
+        }
+    };
 
     return (
-        <tr key={id} className='text-ellipsis'>
-            <td className='py-3 px-2'>{fullname}</td>
-            <td>{phone_number}</td>
+        <tr key={staffId} className='text-ellipsis'>
+            <td className='py-3 px-2'>{fullName}</td>
+            <td>{phoneNumber}</td>
             <td>{email}</td>
             <td>{gender}</td>
             <td>{position}</td>
@@ -43,11 +54,13 @@ function StaffRow({ staff }) {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={DeleteStaff}>Continue</AlertDialogAction>
+                            <AlertDialogAction onClick={handleDeleteStaff} disabled={isDeleting}>
+                                {isDeleting ? 'Deleting...' : 'Continue'}
+                            </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
-                <NavLink to={`/staff/${id}`}>
+                <NavLink to={`/staff/${staffId}`}>
                     <Button className='bg-white border-[1px] border-blue-500 hover:bg-blue-500 group px-3 ml-2'>
                         <IoInformationCircleOutline className='w-4 h-4 text-blue-600 fill-blue-600 group-hover:fill-white group-hover:text-white' />
                     </Button>
@@ -59,9 +72,9 @@ function StaffRow({ staff }) {
 
 StaffRow.propTypes = {
     staff: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        fullname: PropTypes.string.isRequired,
-        phone_number: PropTypes.string.isRequired,
+        staffId: PropTypes.number.isRequired,
+        fullName: PropTypes.string.isRequired,
+        phoneNumber: PropTypes.string.isRequired,
         email: PropTypes.string.isRequired,
         gender: PropTypes.string.isRequired,
         position: PropTypes.string.isRequired,

@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
-import { staffs } from '../test/data/staff';
+import { useEffect, useState } from 'react';
 import StaffRow from './row'; // Assuming you have a component for rendering staff rows
 import '../styles/staff.css';
 import { Input } from "@/components/ui/input";
@@ -23,18 +22,53 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import axios from 'axios';
 
 function StaffPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
+    const [staffs, setStaffs] = useState([]);
     const [email, setEmail] = useState('');
     const [fullname, setFullname] = useState('');
     const [gender, setGender] = useState('');
     const staffsPerPage = 5;
 
+
+    useEffect(() => {
+        // Function to fetch customers from API
+        const fetchStaff = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/api/Staffs'); // Adjust the URL as per your API endpoint
+                setStaffs(response.data);
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            }
+        };
+
+        fetchStaff(); // Call the function when the component mounts
+    }, []);
+
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post('http://localhost:3000/api/Accounts/create', {
+                email: email,
+                name: fullname,
+                gender: gender
+            });
+
+            console.log('Staff created successfully:', response.data);
+            setEmail('');
+            setFullname('');
+            setGender('');
+            setIsDialogOpen(false);
+        } catch (error) {
+            console.error('Error creating staff:', error);
+        }
+    };
+
     // Filter staffs based on search query
     const filteredStaffs = staffs.filter(staff =>
-        staff.fullname.toLowerCase().includes(searchQuery.toLowerCase())
+        staff.fullName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const indexOfLastStaff = currentPage * staffsPerPage;
@@ -101,8 +135,8 @@ function StaffPage() {
                                 <Input
                                     type='email'
                                     id="email"
-                                    defaultValue="Kien dep trai"
                                     className="col-span-3"
+                                    value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
@@ -112,8 +146,8 @@ function StaffPage() {
                                 </Label>
                                 <Input
                                     id="fullname"
-                                    defaultValue="@kienhaha"
                                     className="col-span-3"
+                                    value={fullname}
                                     onChange={(e) => setFullname(e.target.value)}
                                 />
                             </div>
@@ -136,7 +170,7 @@ function StaffPage() {
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="submit">Save changes</Button>
+                            <Button type="submit" onClick={handleSubmit}>Save changes</Button>
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>

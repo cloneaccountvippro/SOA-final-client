@@ -1,17 +1,33 @@
 import { useState } from 'react';
-import { customers } from '../test/data/customer';
 import CustomerRow from './row'; 
 import '../styles/customer.css'
 import { Input } from "@/components/ui/input"
+import axios from 'axios';
+import { useEffect } from 'react';
 
 function CustomerPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
+    const [customers, setCustomers] = useState([]);
     const customersPerPage = 5;
+
+    useEffect(() => {
+        // Function to fetch customers from API
+        const fetchCustomers = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/api/Customers'); // Adjust the URL as per your API endpoint
+                setCustomers(response.data);
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+            }
+        };
+
+        fetchCustomers(); // Call the function when the component mounts
+    }, []);
 
     // Filter customers based on search query
     const filteredCustomers = customers.filter(customer =>
-        customer.name.toLowerCase().includes(searchQuery.toLowerCase())
+        customer.fullName && customer.fullName.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const indexOfLastCustomer = currentPage * customersPerPage;

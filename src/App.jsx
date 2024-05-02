@@ -41,14 +41,12 @@ const appRouter = createBrowserRouter(
   )
 )
 function App() {
-  // eslint-disable-next-line no-unused-vars
   const isLogin = useSelector((state) => state.user.isLogin)
 
   const [currentRouter, setCurrentRouter] = useState(isLogin ? appRouter : guestRouter)
 
   useEffect(() => {
-    // Choose router with proper layout
-    const currentRouter = !isLogin ? appRouter : guestRouter;
+    const currentRouter = isLogin ? appRouter : guestRouter;
 
     setCurrentRouter(currentRouter);
 

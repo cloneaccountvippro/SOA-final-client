@@ -4,6 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import axios from 'axios';
+import {useDispatch} from 'react-redux';
 import {
     Form,
     FormControl,
@@ -11,6 +13,8 @@ import {
     FormItem,
     FormMessage,
 } from '@/components/ui/form';
+import { updateAutheticationStatusAsync } from '@/state/user/userSlice';
+import { setLoginStatus } from '@/state/user/userSlice';
 import { SIGN_IN } from '../signin/asset/string';
 import './styles/styles.css'
 
@@ -25,7 +29,8 @@ const formShcema = z.object({
 
 
 function SignIn() {
-    const [account, setEmail] = useState('');
+    const dispatch = useDispatch();
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const form = useForm({
@@ -36,15 +41,23 @@ function SignIn() {
         },
     });
 
-    const onSubmit = (data) => {
-        if (data.email.message === null && data.password.message === null) {
-            console.log("error");
+    const onSubmit = async (data) => {
+        const { email, password } = data;
+        try {
+            const response = await axios.post('http://localhost:3000/api/Accounts/login', {
+                email: email,
+                password: password
+            });
+            const userData = response.data;
+    
+            dispatch(updateAutheticationStatusAsync(userData));
+            dispatch(setLoginStatus(true));
+        } catch (error) {
+            console.error('Login failed:', error);
         }
-        console.log("error")
     };
 
     const onError = (error) => {
-        console.log("Kien ngu")
         console.log(error);
     };
 
@@ -64,7 +77,7 @@ function SignIn() {
                                             <FormControl>
                                                 <Input
                                                     type="email"
-                                                    value={account}
+                                                    value={email}
                                                     placeholder={'Account Email'}
                                                     autoComplete='email'
                                                     onChange={(e) => setEmail(e.target.value)}

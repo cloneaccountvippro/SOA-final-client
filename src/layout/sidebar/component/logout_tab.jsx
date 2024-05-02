@@ -10,8 +10,16 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Power } from 'lucide-react';
+import { useDispatch } from "react-redux";
+import { resetUserState } from "@/state/user/userSlice";
 
 function LogoutButton() {
+    const dispatch = useDispatch();
+
+    const handleLogout = () => {
+        dispatch(resetUserState());
+    };
+
     return (
         <div className="w-full flex items-center">
             <AlertDialog>
@@ -31,7 +39,7 @@ function LogoutButton() {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Continue</AlertDialogAction>
+                        <AlertDialogAction onClick={handleLogout}>Continue</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>

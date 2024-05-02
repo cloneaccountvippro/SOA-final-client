@@ -1,20 +1,21 @@
-import { useState } from "react";
-import { rooms } from "../test/data/room";
-import { customers } from "@/pages/customer/test/data/customer";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios from 'axios';
 
 function RoomsPage() {
     const [customerData, setCustomerData] = useState({
-        name: "",
-        age: "",
+        idCard: "",
+        fullName: "",
+        dob: "",
         gender: "",
         address: "",
         email: "",
         country: "",
-        phone_number: ""
+        phoneNumber: ""
     });
 
+    const [roomsData, setRoomsData] = useState([]);
     const [selectedRooms, setSelectedRooms] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [showAvailableRooms, setShowAvailableRooms] = useState(false);
@@ -30,52 +31,84 @@ function RoomsPage() {
     };
 
     // Function to handle input change for phone number
-    const handlePhoneNumberChange = (event) => {
+    const handlePhoneNumberChange = async (event) => {
         const phoneNumber = event.target.value;
-        setCustomerData((prevCustomerData) => {
-            const foundCustomer = customers.find((customer) => customer.phone_number === phoneNumber);
-            if (foundCustomer) {
-                // If a customer is found, update other fields with customer's data
-                // eslint-disable-next-line no-unused-vars
-                const { phone_number, ...customerWithoutPhoneNumber } = foundCustomer; // Exclude phone number from update
-                return {
-                    ...prevCustomerData,
-                    ...customerWithoutPhoneNumber
-                };
-            } else {
-                // If no customer is found, reset other fields
-                return {
-                    ...prevCustomerData,
-                    name: "",
-                    age: "",
-                    gender: "",
-                    address: "",
-                    email: "",
-                    country: "",
-                    phone_number: phoneNumber
-                };
+        // Check if the input contains exactly 10 digits
+        if (phoneNumber.length === 10 && /^\d+$/.test(phoneNumber)) {
+            try {
+                const response = await axios.get(`http://localhost:3000/api/Customers/phone-number/${phoneNumber}`);
+                const customer = response.data;
+                setCustomerData((prevCustomerData) => {
+                    if (customer) {
+                        // If a customer is found, update other fields with customer's data
+                        return {
+                            ...prevCustomerData,
+                            ...customer
+                        };
+                    } else {
+                        // If no customer is found, reset other fields
+                        return {
+                            ...prevCustomerData,
+                            idCard: "",
+                            fullName: "",
+                            dob: "",
+                            gender: "",
+                            address: "",
+                            email: "",
+                            country: "",
+                            phoneNumber: phoneNumber
+                        };
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching customer:', error);
+                // Handle error, such as displaying a message to the user
             }
-        });
-    };
-
-    // Function to handle room selection
-    const handleRoomSelection = (roomId) => {
-        const selectedRoom = rooms.find((room) => room.id === roomId);
-        if (selectedRoom && selectedRoom.isActive) {
-            setSelectedRooms((prevSelectedRooms) => {
-                if (prevSelectedRooms.includes(roomId)) {
-                    // If room is already selected, deselect it
-                    return prevSelectedRooms.filter((id) => id !== roomId);
-                } else {
-                    // If room is not selected, select it
-                    return [...prevSelectedRooms, roomId];
-                }
+        } else {
+            setCustomerData({
+                idCard: "",
+                fullName: "",
+                dob: "",
+                gender: "",
+                address: "",
+                email: "",
+                country: "",
+                phoneNumber: phoneNumber
             });
         }
     };
 
+    const fetchRoomsData = async () => {
+        try {
+            const response = await axios.get('http://localhost:3000/api/Rooms');
+            const rooms = response.data;
+            setRoomsData(rooms);
+        } catch (error) {
+            console.error('Error fetching rooms data:', error);
+            // Handle error, such as displaying a message to the user
+        }
+    };
+
+    // Fetch rooms data when the component mounts
+    useEffect(() => {
+        fetchRoomsData();
+    }, []);
+
+    // Function to handle room selection
+    const handleRoomSelection = (roomId) => {
+        setSelectedRooms((prevSelectedRooms) => {
+            if (prevSelectedRooms.includes(roomId)) {
+                // If room is already selected, deselect it
+                return prevSelectedRooms.filter((id) => id !== roomId);
+            } else {
+                // If room is not selected, select it
+                return [...prevSelectedRooms, roomId];
+            }
+        });
+    };
+    
     // Calculate total number of pages
-    const totalPages = Math.ceil(rooms.length / itemsPerPage);
+    const totalPages = Math.ceil(roomsData.length / itemsPerPage);
 
     // Function to handle page change
     const handlePageChange = (page) => {
@@ -87,10 +120,10 @@ function RoomsPage() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
     // Filter rooms based on availability
-    const availableRooms = rooms.filter(room => room.isActive);
+    const availableRooms = roomsData.filter(room => room.isActive);
 
     // Filter rooms based on pagination and availability
-    const currentItems = showAvailableRooms ? availableRooms.slice(indexOfFirstItem, indexOfLastItem) : rooms.slice(indexOfFirstItem, indexOfLastItem);
+    const currentItems = showAvailableRooms ? availableRooms.slice(indexOfFirstItem, indexOfLastItem) : roomsData.slice(indexOfFirstItem, indexOfLastItem);
 
     // Check if all customer fields are filled
     const isCustomerDataComplete = Object.values(customerData).every(value => value !== "");
@@ -109,7 +142,7 @@ function RoomsPage() {
                                 type="tel"
                                 id="phone"
                                 name="phone_number"
-                                value={customerData.phone_number}
+                                value={customerData.phoneNumber}
                                 onChange={handlePhoneNumberChange}
                                 className="w-[70%]"
                                 placeholder="Enter phone number to find customer"
@@ -117,7 +150,7 @@ function RoomsPage() {
                         </div>
                         {/* Input fields for customer data */}
                         {Object.keys(customerData).map((key) => {
-                            if (key !== "phone_number" && key !== 'id') { // Exclude phone number field from rendering
+                            if (key !== "phoneNumber" && key !== 'customerId') { // Exclude phone number field from rendering
                                 return (
                                     <div key={key} className="flex items-center gap-2 my-2 justify-between">
                                         <label htmlFor={key}>{key.replace('_', ' ').toUpperCase()}:</label>
@@ -154,9 +187,9 @@ function RoomsPage() {
                             <tbody>
                                 {currentItems.map((room) => (
                                     <tr
-                                        key={room.id}
-                                        className={room.isActive ? (selectedRooms.includes(room.id) ? "bg-blue-500 cursor-pointer" : "hover:bg-blue-300 cursor-pointer") : "bg-gray-200"}
-                                        onClick={() => handleRoomSelection(room.id)}
+                                        key={room.roomId}
+                                        className={room.isActive ? (selectedRooms.includes(room.roomId) ? "bg-blue-500 cursor-pointer" : "hover:bg-blue-300 cursor-pointer") : "bg-gray-200"}
+                                        onClick={() => handleRoomSelection(room.roomId)}
                                     >
                                         <td className="border border-gray-400 p-2">{room.name}</td>
                                         <td className="border border-gray-400 p-2">{room.type}</td>
