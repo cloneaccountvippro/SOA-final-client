@@ -23,13 +23,14 @@ const formShcema = z.object({
         .regex(/^[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)+[a-zA-Z]{2,}$/, { message: SIGN_IN.EMAIL_FORMAT_INCORRECT })
         .email(),
     password: z.string({ required_error: SIGN_IN.PASSWORD_REQUIRED })
-        .min(8, { message: SIGN_IN.PASSWORD_LENGTH_SHORT })
+        .min(6, { message: SIGN_IN.PASSWORD_LENGTH_SHORT })
         .max(50, { message: SIGN_IN.PASSWORD_LENGTH_LONG }),
 });
 
 
 function SignIn() {
     const dispatch = useDispatch();
+    const [error, setError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -49,11 +50,11 @@ function SignIn() {
                 password: password
             });
             const userData = response.data;
-    
+            console.log(userData)
             dispatch(updateAutheticationStatusAsync(userData));
             dispatch(setLoginStatus(true));
         } catch (error) {
-            console.error('Login failed:', error);
+            setError('Login failed. Please check your credentials.');
         }
     };
 
@@ -107,6 +108,7 @@ function SignIn() {
                                         </FormItem>
                                     )}
                                 />
+                                {error && <div className="text-red-500">{error}</div>}
                                 <Button
                                     type="submit"
                                     className="h-10 w-full"
@@ -115,6 +117,9 @@ function SignIn() {
                                 </Button>
                             </form>
                         </Form>
+                        <div className=" text-sm">
+                            <a href="/reset" className="text-blue-500">Forgot password?</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,16 +1,17 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, createSelector } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 interface UserState {
     id: number,
     name: string,
-    role: string,
+    position: string,
     isLogin: boolean,
 }
 
 const initialState: UserState = {
     id: 0,
     name: "",
-    role: "",
+    position: "",
     isLogin: false,
 }
 
@@ -32,14 +33,14 @@ const userSlice = createSlice({
         .addCase(updateAutheticationStatusAsync.fulfilled, (state, action) => {
             state.id = action.payload.id
             state.name = action.payload.name
-            state.role = action.payload.role
+            state.position = action.payload.position
         })
     }
 })
 
 export const updateAutheticationStatusAsync = createAsyncThunk(
     "user/updateAutheticationStatusAsync",
-    async (data: {id: number, name: string, role: string}) => {
+    async (data: {id: number, name: string, position: string}) => {
         await new Promise((resolve) => setTimeout(resolve, 1000))
         return data
     }
