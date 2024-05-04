@@ -27,7 +27,7 @@ const guestRouter = createBrowserRouter(
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<AppLayout />}>
-      <Route path='' element ={<Navigate to="/customer" replace/>}/>
+      <Route path='' element ={<Navigate to="/staff" replace/>}/>
       <Route path='/customer' element={<CustomerPage />} />
       <Route path='/staff'>
         <Route path=":id" element={<StaffDetailPage />} />

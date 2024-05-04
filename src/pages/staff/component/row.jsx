@@ -16,6 +16,8 @@ import { MdOutlineDelete } from "react-icons/md";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useState } from 'react';
 import axios from 'axios';
+import {useSelector} from 'react-redux'
+
 
 function StaffRow({ staff }) {
     const { staffId, fullName, phoneNumber, email, gender, position } = staff;
@@ -34,6 +36,8 @@ function StaffRow({ staff }) {
         }
     };
 
+    const role = useSelector((state) => state.user.position)
+    const isManager = role === "manager";
     return (
         <tr key={staffId} className='text-ellipsis'>
             <td className='py-3 px-2'>{fullName}</td>
@@ -42,24 +46,30 @@ function StaffRow({ staff }) {
             <td>{gender}</td>
             <td>{position}</td>
             <td>
-                <AlertDialog>
-                    <AlertDialogTrigger><Button className='bg-white border-[1px] border-red-500 hover:bg-red-500 group px-3'><MdOutlineDelete className='w-4 h-4 fill-red-600 group-hover:fill-white' /></Button></AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete staff account
-                                and remove his/her data from your servers.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={handleDeleteStaff} disabled={isDeleting}>
-                                {isDeleting ? 'Deleting...' : 'Continue'}
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+                {isManager && ( // Render delete button only if user is a manager
+                    <AlertDialog>
+                        <AlertDialogTrigger>
+                            <Button className='bg-white border-[1px] border-red-500 hover:bg-red-500 group px-3'>
+                                <MdOutlineDelete className='w-4 h-4 fill-red-600 group-hover:fill-white' />
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete staff account
+                                    and remove his/her data from your servers.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleDeleteStaff} disabled={isDeleting}>
+                                    {isDeleting ? 'Deleting...' : 'Continue'}
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                )}
                 <NavLink to={`/staff/${staffId}`}>
                     <Button className='bg-white border-[1px] border-blue-500 hover:bg-blue-500 group px-3 ml-2'>
                         <IoInformationCircleOutline className='w-4 h-4 text-blue-600 fill-blue-600 group-hover:fill-white group-hover:text-white' />

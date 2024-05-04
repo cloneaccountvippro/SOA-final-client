@@ -8,24 +8,24 @@ import {useState} from 'react';
 import { NavLink } from "react-router-dom";
 
 export const Sidebar = () => {
-    const [selectedTab, setSelectedTab] = useState('Customer')
+    const [selectedTab, setSelectedTab] = useState('Staff')
     return (
         <div className="h-screen w-[16vw] border-r p-3 flex flex-col justify-between">
             {/* User section */} 
             <div className=" space-y-2">
-                <NavLink to={"/customer"}>
+                <NavLink to={"/staff"}>
                     <SidebarTab 
-                        name="Customer" 
-                        select = {selectedTab === "Customer"} 
+                        name="Staff" 
+                        select = {selectedTab === "Staff"} 
                         onClick={setSelectedTab}
                     >
                         <IoMdPeople className="w-5 h-5"/>
                     </SidebarTab>
                 </NavLink>
-                <NavLink to={"/staff"}>
+                <NavLink to={"/customer"}>
                     <SidebarTab 
-                        name="Staff" 
-                        select = {selectedTab === "Staff"} 
+                        name="Customer" 
+                        select = {selectedTab === "Customer"} 
                         onClick={setSelectedTab}
                     >
                         <IoMdPeople className="w-5 h-5"/>

@@ -31,6 +31,8 @@ function StaffPage() {
     const [email, setEmail] = useState('');
     const [fullname, setFullname] = useState('');
     const [gender, setGender] = useState('');
+    const [position, setPosition] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const staffsPerPage = 5;
 
 
@@ -51,15 +53,18 @@ function StaffPage() {
     const handleSubmit = async () => {
         try {
             const response = await axios.post('http://localhost:3000/api/Accounts/create', {
-                email: email,
-                name: fullname,
-                gender: gender
+                Email: email,
+                Name: fullname,
+                Gender: gender,
+                PhoneNumber: phoneNumber,
+                Position: position
             });
 
             console.log('Staff created successfully:', response.data);
             setEmail('');
             setFullname('');
-            setGender('');
+            setGender(''); 
+    
             setIsDialogOpen(false);
         } catch (error) {
             console.error('Error creating staff:', error);
@@ -152,6 +157,17 @@ function StaffPage() {
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="phoneNumber" className="text-right">
+                                    Phone Number
+                                </Label>
+                                <Input
+                                    id="phoneNumber"
+                                    className="col-span-3"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="gender" className="text-right">
                                     Gender
                                 </Label>
@@ -164,6 +180,23 @@ function StaffPage() {
                                             <SelectLabel>Gender</SelectLabel>
                                             <SelectItem value="male">Male</SelectItem>
                                             <SelectItem value="female">Female</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="gender" className="text-right">
+                                    Gender
+                                </Label>
+                                <Select id="gender" onValueChange={(value)=>setPosition(value)}>
+                                    <SelectTrigger className="w-[276px]">
+                                        <SelectValue placeholder="Choose position" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Chose Position</SelectLabel>
+                                            <SelectItem value="receptionist">Receptionist</SelectItem>
+                                            <SelectItem value="sale_manager">Sale manager</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
