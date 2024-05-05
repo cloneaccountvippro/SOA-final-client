@@ -31,20 +31,20 @@ export const Sidebar = () => {
                         <IoMdPeople className="w-5 h-5"/>
                     </SidebarTab>
                 </NavLink>
-                <NavLink to={"/rooms"}>
+                <NavLink to={"/booking_rooms"}>
                     <SidebarTab 
-                    name="Rooms" 
-                    select = {selectedTab === "Rooms"} 
+                    name="Booking Rooms" 
+                    select = {selectedTab === "Booking Rooms"} 
                     onClick={setSelectedTab}
                     >
                         <MdMeetingRoom className="w-5 h-5"/>
                     </SidebarTab>
                 </NavLink>
                 
-                <NavLink to={"/service"}>
+                <NavLink to={"/rooms"}>
                     <SidebarTab 
-                        name="Service" 
-                        select = {selectedTab === "Service"} 
+                        name="Rooms" 
+                        select = {selectedTab === "Rooms"} 
                         onClick={setSelectedTab}
                     >
                         <MdOutlineRoomService className="w-5 h-5"/>

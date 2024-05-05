@@ -64,7 +64,7 @@ function CustomerPage() {
 
     const handleSearchChange = (event) => {
         setSearchQuery(event.target.value);
-        setCurrentPage(1); // Reset pagination to first page when search query changes
+        setCurrentPage(1);
     };
 
     return (

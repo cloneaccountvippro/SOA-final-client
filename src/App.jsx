@@ -33,8 +33,8 @@ const appRouter = createBrowserRouter(
         <Route path=":id" element={<StaffDetailPage />} />
         <Route path="" element={<StaffPage />}/>
       </Route>
-      <Route path='/rooms' element={<RoomsPage />} />
-      <Route path='/service' element={<ServicesPage />} />
+      <Route path='/booking_rooms' element={<RoomsPage />} />
+      <Route path='/rooms' element={<ServicesPage />} />
       <Route path='/invoice' element={<InvoicePage />} />
       <Route path="*" element={<h1>404 - Notfound</h1>} />,
     </Route>,
