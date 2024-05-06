@@ -82,7 +82,7 @@ function CustomerPage() {
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Age</th>
+                            <th>Date of birth</th>
                             <th>Gender</th>
                             <th>Phone Number</th>
                             <th>Address</th>

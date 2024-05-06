@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 function StaffPage() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -34,7 +35,8 @@ function StaffPage() {
     const [position, setPosition] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const staffsPerPage = 5;
-
+    const role = useSelector((state) => state.user.position)
+    const isManager = role === "manager";
 
     useEffect(() => {
         // Function to fetch customers from API
@@ -63,9 +65,12 @@ function StaffPage() {
             console.log('Staff created successfully:', response.data);
             setEmail('');
             setFullname('');
-            setGender(''); 
-    
+            setPhoneNumber('');
+            setPosition('');
+            setGender('');
+
             setIsDialogOpen(false);
+            fetchStaff()
         } catch (error) {
             console.error('Error creating staff:', error);
         }
@@ -123,90 +128,93 @@ function StaffPage() {
                     className='justify-start w-[20%] mb-5'
                     placeholder="Enter staff name"
                     value={searchQuery}
-                    onChange={handleSearchChange} />
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="outline">Add Staff</Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                            <DialogTitle>Adding new staff</DialogTitle>
-                        </DialogHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="email" className="text-right">
-                                    Email
-                                </Label>
-                                <Input
-                                    type='email'
-                                    id="email"
-                                    className="col-span-3"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
+                    onChange={handleSearchChange}
+                />
+                {isManager && (
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="outline">Add Staff</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Adding new staff</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="email" className="text-right">
+                                        Email
+                                    </Label>
+                                    <Input
+                                        type='email'
+                                        id="email"
+                                        className="col-span-3"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="fullname" className="text-right">
+                                        Fullname
+                                    </Label>
+                                    <Input
+                                        id="fullname"
+                                        className="col-span-3"
+                                        value={fullname}
+                                        onChange={(e) => setFullname(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="phoneNumber" className="text-right">
+                                        Phone Number
+                                    </Label>
+                                    <Input
+                                        id="phoneNumber"
+                                        className="col-span-3"
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="gender" className="text-right">
+                                        Gender
+                                    </Label>
+                                    <Select id="gender" onValueChange={(value) => setGender(value)}>
+                                        <SelectTrigger className="w-[276px]">
+                                            <SelectValue placeholder="Choose gender" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Gender</SelectLabel>
+                                                <SelectItem value="male">Male</SelectItem>
+                                                <SelectItem value="female">Female</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="gender" className="text-right">
+                                        Gender
+                                    </Label>
+                                    <Select id="gender" onValueChange={(value) => setPosition(value)}>
+                                        <SelectTrigger className="w-[276px]">
+                                            <SelectValue placeholder="Choose position" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Chose Position</SelectLabel>
+                                                <SelectItem value="receptionist">Receptionist</SelectItem>
+                                                <SelectItem value="sale_manager">Sale manager</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="fullname" className="text-right">
-                                    Fullname
-                                </Label>
-                                <Input
-                                    id="fullname"
-                                    className="col-span-3"
-                                    value={fullname}
-                                    onChange={(e) => setFullname(e.target.value)}
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="phoneNumber" className="text-right">
-                                    Phone Number
-                                </Label>
-                                <Input
-                                    id="phoneNumber"
-                                    className="col-span-3"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="gender" className="text-right">
-                                    Gender
-                                </Label>
-                                <Select id="gender" onValueChange={(value)=>setGender(value)}>
-                                    <SelectTrigger className="w-[276px]">
-                                        <SelectValue placeholder="Choose gender" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Gender</SelectLabel>
-                                            <SelectItem value="male">Male</SelectItem>
-                                            <SelectItem value="female">Female</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="gender" className="text-right">
-                                    Gender
-                                </Label>
-                                <Select id="gender" onValueChange={(value)=>setPosition(value)}>
-                                    <SelectTrigger className="w-[276px]">
-                                        <SelectValue placeholder="Choose position" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Chose Position</SelectLabel>
-                                            <SelectItem value="receptionist">Receptionist</SelectItem>
-                                            <SelectItem value="sale_manager">Sale manager</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button type="submit" onClick={handleSubmit}>Save changes</Button>
-                        </DialogFooter>
-                    </DialogContent>
-                </Dialog>
+                            <DialogFooter>
+                                <Button type="submit" onClick={handleSubmit}>Save changes</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                )}
             </div>
 
             <div className="table-container">

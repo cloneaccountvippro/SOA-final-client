@@ -38,6 +38,7 @@ function StaffDetailPage() {
             await axios.put(`http://localhost:3000/api/Staffs/${id}`, editedStaff);
             console.log('Changes saved successfully');
             setStaff(editedStaff);
+            fetchStaffDetail()
         } catch (error) {
             console.error('Error saving changes:', error);
         } finally {

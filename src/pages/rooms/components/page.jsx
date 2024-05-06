@@ -19,11 +19,14 @@ function RoomsPage() {
         phoneNumber: ""
     });
 
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
     const staffId = useSelector((state) => state.user.id);
     const [roomsData, setRoomsData] = useState([]);
     const [bookingsData, setBookingsData] = useState([]);
-    const [checkInDate, setCheckInDate] = useState();
-    const [checkOutDate, setCheckOutDate] = useState();
+    const [checkInDate, setCheckInDate] = useState(today);
+    const [checkOutDate, setCheckOutDate] = useState(tomorrow);
     const [selectedRooms, setSelectedRooms] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [showAvailableRooms, setShowAvailableRooms] = useState(false);
@@ -86,9 +89,13 @@ function RoomsPage() {
         }
     };
 
+
     const fetchRoomsData = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/Rooms');
+            const response = await axios.post('http://localhost:3000/api/Bookings/room/availble', {
+                CheckInDate: checkInDate.toISOString(),
+                CheckOutDate: checkOutDate.toISOString()
+            });
             const rooms = response.data;
             setRoomsData(rooms);
         } catch (error) {
@@ -166,6 +173,7 @@ function RoomsPage() {
             // Handle success, e.g., show a success message
             console.log("Room booked successfully:", response.data);
             // After successfully booking, fetch updated bookings data
+            fetchRoomsData()
             fetchBookingsData();
         } catch (error) {
             console.error('Error booking room:', error);
@@ -177,6 +185,7 @@ function RoomsPage() {
         try {
             await axios.delete(`http://localhost:3000/api/Bookings/room/${bookingId}`);
             // After successfully deleting the booking, fetch updated bookings data
+            fetchRoomsData()
             fetchBookingsData();
         } catch (error) {
             console.error('Error deleting booking:', error);
@@ -188,6 +197,7 @@ function RoomsPage() {
         try {
             await axios.delete('http://localhost:3000/api/Bookings/room/all');
             // After successfully clearing all bookings, fetch updated bookings data
+            fetchRoomsData()
             fetchBookingsData();
         } catch (error) {
             console.error('Error clearing all bookings:', error);
@@ -208,7 +218,7 @@ function RoomsPage() {
                 Email: customerData.email,
                 Country: customerData.country,
             };
-    
+
             const response = await axios.post(`http://localhost:3000/api/Bookings/create`, payload);
             console.log("Room booked successfully:", response.data);
             fetchBookingsData();
@@ -235,9 +245,10 @@ function RoomsPage() {
                                 value={customerData.idCard}
                                 onChange={handlePhoneNumberChange}
                                 className="w-[70%]"
-                                placeholder="Enter identify card id to find customer"
+                                placeholder={customerData.idCard ? "Enter identify card id to find customer" : "Enter identify card id"}
                             />
                         </div>
+
                         {/* Input fields for customer data */}
                         {Object.keys(customerData).map((key) => {
                             if (key !== "idCard" && key !== 'customerId') { // Exclude phone number field from rendering
@@ -260,8 +271,8 @@ function RoomsPage() {
                         })}
                     </form>
                     {/* Button to submit customer data */}
-                    <Button 
-                        disabled={!isCustomerDataComplete || bookingsData.length === 0} 
+                    <Button
+                        disabled={!isCustomerDataComplete || bookingsData.length === 0}
                         className="mt-3"
                         onClick={createRoomInvoice}
                     >
@@ -310,20 +321,6 @@ function RoomsPage() {
                             </tbody>
                         </table>
                     </div>
-                    {/* Pagination */}
-                    <div className="mt-5  flex justify-end">
-                        <div className="space-x-2">
-                            {Array.from({ length: totalPages }, (_, i) => (
-                                <Button key={i} onClick={() => handlePageChange(i + 1)} className="w-2 h-[30px]">
-                                    {i + 1}
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
-                    {/* Button to toggle available rooms */}
-                    <Button onClick={() => setShowAvailableRooms(!showAvailableRooms)} className="">
-                        {showAvailableRooms ? "Show All Rooms" : "Show Available Rooms Only"}
-                    </Button>
                 </div>
                 {/* Bookings Table */}
                 <div className="">
